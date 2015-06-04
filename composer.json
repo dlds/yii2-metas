@@ -1,0 +1,33 @@
+{
+    "name": "dlds/yii2-metas",
+    "description": "Yii2 Meta Tags handler",
+    "keywords": ["yii2", "metas", "handler"],
+    "type": "yii2-extension",
+    "license": "BSD",
+    "support": {
+        "issues": "https://github.com/dlds/yii2-metas/issues",
+        "wiki": "https://github.com/dlds/yii2-metas/wiki",
+        "source": "https://github.com/dlds/yii2-metas"
+    },
+    "authors": [
+        {
+            "name": "Jiri Svoboda",
+            "email": "jiri.svoboda@dlds.cz"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "require-dev": {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-faker": "*",
+        "codeception/specify": "*",
+        "codeception/verify": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "dlds\\metas\\": "src"
+        }
+    }
+}
