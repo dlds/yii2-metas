@@ -8,7 +8,58 @@ use yii\web\View;
  * OpenGraph meta data
  * @see http://ogp.me
  */
-class OpenGraph {
+class OpenGraph extends \yii\base\Component {
+
+    /**
+     * Types
+     */
+    // activities
+    const TYPE_ACTIVITY = 'activity';
+    const TYPE_SPORT = 'sport';
+    // bussiness
+    const TYPE_BAR = 'bar';
+    const TYPE_COMPANY = 'company';
+    const TYPE_CAFE = 'cafe';
+    const TYPE_HOTEL = 'hotel';
+    const TYPE_RESTAURANT = 'restaurant';
+    // groups
+    const TYPE_CAUSE = 'cause';
+    const TYPE_SPORTS_LEAGUE = 'sports_league';
+    const TYPE_SPORTS_TEAM = 'sports_team';
+    // organizations
+    const TYPE_BAND = 'band';
+    const TYPE_GOVERNMENT = 'government';
+    const TYPE_NON_PROFIT = 'non_profit';
+    const TYPE_SCHOOL = 'school';
+    const TYPE_UNIVERSITY = 'university';
+    // people
+    const TYPE_ACTOR = 'actor';
+    const TYPE_ATHLETE = 'athlete';
+    const TYPE_AUTHOR = 'author';
+    const TYPE_DIRECTOR = 'director';
+    const TYPE_MUSICIAN = 'musician';
+    const TYPE_POLITICIAN = 'politician';
+    const TYPE_PROFILE = 'profile';
+    const TYPE_PUBLIC_FIGURE = 'public_figure';
+    // places
+    const TYPE_CITY = 'city';
+    const TYPE_COUNTRY = 'country';
+    const TYPE_LANDMARK = 'landmark';
+    const TYPE_STATE_PROVINCE = 'state_province';
+    // products & entertainment
+    const TYPE_ALBUM = 'album';
+    const TYPE_BOOK = 'book';
+    const TYPE_DRINK = 'drink';
+    const TYPE_FOOD = 'food';
+    const TYPE_GAME = 'game';
+    const TYPE_MOVIE = 'movie';
+    const TYPE_PRODUCT = 'product';
+    const TYPE_SONG = 'song';
+    const TYPE_TV_SHOW = 'tv_show';
+    // websites
+    const TYPE_ARTICLE = 'article';
+    const TYPE_BLOG = 'blog';
+    const TYPE_WEBSITE = 'website';
 
     /**
      * @var string The title of your object as it should appear within the graph, e.g., "The Rock"
@@ -70,9 +121,21 @@ class OpenGraph {
      */
     public function __construct()
     {
+        $this->init();
+
         \Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function() {
             return $this->handlePageBegin();
         });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        // default initialization goes here
+        $this->site_name = \Yii::$app->name;
+        $this->locale = \Yii::$app->language;
     }
 
     /**
@@ -80,24 +143,21 @@ class OpenGraph {
      */
     protected function handlePageBegin()
     {
-        \Yii::$app->controller->view->registerMetaTag(['property' => 'og:title', 'content' => $this->title], 'og:title');
-        \Yii::$app->controller->view->registerMetaTag(['property' => 'og:site_name', 'content' => $this->site_name], 'og:site_name');
-        \Yii::$app->controller->view->registerMetaTag(['property' => 'og:url', 'content' => $this->url], 'og:url');
-        \Yii::$app->controller->view->registerMetaTag(['property' => 'og:type', 'content' => $this->type], 'og:type');
+        $properties = get_object_vars($this);
 
-        // Locale issafe to be specifued since it has default value on Yii applications
-        \Yii::$app->controller->view->registerMetaTag(['property' => 'og:locale', 'content' => $this->locale], 'og:locale');
-
-        // Only add a description meta if specified
-        if ($this->description !== null)
+        foreach ($properties as $key => $value)
         {
-            \Yii::$app->controller->view->registerMetaTag(['property' => 'og:description', 'content' => $this->description], 'og:description');
-        }
+            if ('locale_alternate' == $key)
+            {
+                $key = str_replace('_', ':', $key);
+            }
 
-        // Only add an image meta if specified
-        if ($this->image !== null)
-        {
-            \Yii::$app->controller->view->registerMetaTag(['property' => 'og:image', 'content' => $this->image], 'og:image');
+            if ($value)
+            {
+                $property = sprintf('og:%s', $key);
+
+                \Yii::$app->controller->view->registerMetaTag(['property' => $property, 'content' => $value], $property);
+            }
         }
     }
 }
