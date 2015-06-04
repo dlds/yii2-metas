@@ -62,6 +62,29 @@ class OpenGraph extends \yii\base\Component {
     const TYPE_WEBSITE = 'website';
 
     /**
+     * Details
+     */
+    const DETAILS_PUBLISHER = 'publisher';
+    const DETAILS_PUBLISHED_TIME = 'published_time';
+    const DETAILS_MODIFIED_TIME = 'modified_time';
+    const DETAILS_EXPIRATION_TIME = 'expiration_time';
+    const DETAILS_AUTHOR = 'author';
+    const DETAILS_SECTION = 'section';
+    const DETAILS_TAG = 'tag';
+
+    /**
+     * FB
+     */
+    const FB_APP_ID = 'app_id';
+
+    /**
+     * Templates
+     */
+    const TMPL_DEFAULT = 'og:%s';
+    const TMPL_LOCALES = 'locale:%s';
+    const TMPL_FB = 'fb:%s';
+
+    /**
      * @var string The title of your object as it should appear within the graph, e.g., "The Rock"
      */
     public $title;
@@ -104,7 +127,7 @@ class OpenGraph extends \yii\base\Component {
     /**
      * @var array An array of other locales this page is available in.
      */
-    public $locale_alternate;
+    public $locale_alternate = [];
 
     /**
      * @var string f your object is part of a larger web site, the name which should be displayed for the overall site. e.g., "IMDb".
@@ -115,6 +138,16 @@ class OpenGraph extends \yii\base\Component {
      * @var string A URL to a video file that complements this object.
      */
     public $video;
+
+    /**
+     * @var array details
+     */
+    public $details = [];
+
+    /**
+     * @var array fb
+     */
+    public $fb = [];
 
     /**
      * @inheritdoc
@@ -145,19 +178,71 @@ class OpenGraph extends \yii\base\Component {
     {
         $properties = get_object_vars($this);
 
+        // registeres all properties
         foreach ($properties as $key => $value)
         {
-            if ('locale_alternate' == $key)
+            if (in_array($key, ['locale_alternate', 'details', 'fb']))
             {
-                $key = str_replace('_', ':', $key);
+                break;
             }
 
-            if ($value)
-            {
-                $property = sprintf('og:%s', $key);
+            $this->registerMeta($key, $value);
+        }
 
-                \Yii::$app->controller->view->registerMetaTag(['property' => $property, 'content' => $value], $property);
+        // registeres details tags
+        if (is_array($this->details))
+        {
+            foreach ($this->details as $key => $value)
+            {
+                $this->registerMeta($key, $value, $this->getDetailsTmpl());
             }
         }
+
+        // registeres alternate locales
+        if (is_array($this->locale_alternate))
+        {
+            foreach ($this->locale_alternate as $key => $value)
+            {
+                $this->registerMeta($key, $value, self::TMPL_LOCALES);
+            }
+        }
+
+
+        // registeres fb tags
+        if (is_array($this->fb))
+        {
+            foreach ($this->fb as $key => $value)
+            {
+                $this->registerMeta($key, $value, self::TMPL_FB);
+            }
+        }
+    }
+
+    /**
+     * Registeres meta tag
+     * @param string $key
+     * @param string $value
+     * @param string $tmpl
+     */
+    protected function registerMeta($key, $value, $tmpl = self::TMPL_DEFAULT)
+    {
+        if ($value)
+        {
+            $property = sprintf($tmpl, $key);
+
+            \Yii::$app->controller->view->registerMetaTag([
+                'property' => $property,
+                'content' => $value
+                ], $property);
+        }
+    }
+
+    /**
+     * Retrieves details template
+     * @return string tmpl
+     */
+    private function getDetailsTmpl()
+    {
+        return sprintf('%s:%%s', $this->type);
     }
 }
