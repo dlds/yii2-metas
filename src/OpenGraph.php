@@ -150,15 +150,25 @@ class OpenGraph extends \yii\base\Component {
     public $fb = [];
 
     /**
+     * @var boolean indicates if ajax requests will be handled
+     */
+    public $handleAjax = true;
+
+    /**
      * @inheritdoc
      */
-    public function __construct()
+    public function __construct($config = [])
     {
-        $this->init();
+        parent::__construct($config);
 
-        \Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function() {
-            return $this->handlePageBegin();
-        });
+        if (!\Yii::$app->request->isAjax || $this->handleAjax)
+        {
+            \Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function() {
+                return $this->handlePageBegin();
+            });
+        }
+
+        $this->init();
     }
 
     /**
