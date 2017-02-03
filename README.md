@@ -8,8 +8,8 @@ current web view.
 ## Configuration
 ```
 'components' => [
-	'opengraph' => [
-		'class' => 'dlds\metas\OpenGraph',
+	'metas' => [
+		'class' => 'dlds\metas\MetaHandler',
                 'title' => 'Default title goes here',
                 'description' => 'Default description goes here',
                 //...
@@ -22,8 +22,8 @@ current web view.
 Meta tags must be registered before page render do its work
 
 ```
-Yii::$app->opengraph->title = 'Custom title';
-Yii::$app->opengraph->description = 'Custom description';
+Yii::$app->metas->title = 'Custom title';
+Yii::$app->metas->description = 'Custom description';
 ```
 
 ## Available Properties
