@@ -261,7 +261,7 @@ class MetaHandler extends \yii\base\Component
 
         // registeres all properties
         foreach ($properties as $key => $value) {
-            if (in_array($key, ['locale_alternate', 'details', 'fb', 'handleOg'])) {
+            if (in_array($key, ['locale_alternate', 'details', 'fb', 'handleOg', 'suffix'])) {
                 continue;
             }
 
