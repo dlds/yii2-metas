@@ -193,7 +193,7 @@ class MetaHandler extends \yii\base\Component
 
         // default initialization goes here
         $this->site_name = \Yii::$app->name;
-        $this->locale = \Yii::$app->language;
+        //$this->locale = \Yii::$app->language;
         
         if(true === $this->suffix) {
             $this->suffix = $this->site_name;
@@ -265,7 +265,7 @@ class MetaHandler extends \yii\base\Component
 
         // registeres all properties
         foreach ($properties as $key => $value) {
-            if (in_array($key, ['locale_alternate', 'details', 'fb'])) {
+            if (in_array($key, ['locale_alternate', 'details', 'fb', 'handleOg'])) {
                 continue;
             }
 
