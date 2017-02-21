@@ -193,11 +193,6 @@ class MetaHandler extends \yii\base\Component
 
         // default initialization goes here
         $this->site_name = \Yii::$app->name;
-        //$this->locale = \Yii::$app->language;
-        
-        if(true === $this->suffix) {
-            $this->suffix = $this->site_name;
-        }
     }
 
     /**
@@ -207,16 +202,17 @@ class MetaHandler extends \yii\base\Component
     public function register(MetaTaggerInterface $model, \Closure $callback)
     {
         $this->title = $model->__mtTitle();
+        $this->type = $model->__mtType();
+        $this->image = $model->__mtImage();
+        $this->url = $model->__mtUrl();
 
         $this->audio = $model->__mtAudio();
         $this->description = $model->__mtDescription();
-        $this->details = $model->__mtDetails();
         $this->determiner = $model->__mtDeterminer();
-        $this->image = $model->__mtImage();
+
+        $this->details = $model->__mtDetails();
         $this->locale = $model->__mtLocale();
         $this->locale_alternate = $model->__mtLocale();
-        $this->type = $model->__mtType();
-        $this->url = $model->__mtUrl();
         $this->video = $model->__mtVideo();
 
         call_user_func($callback, $this, $model);
