@@ -169,25 +169,13 @@ class MetaHandler extends \yii\base\Component
     /**
      * @inheritdoc
      */
-    public function __set($name, $value)
-    {
-        if (null === $value) {
-            return false;
-        }
-
-        parent::__set($name, $value);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function init()
     {
         if (!$this->handleAjax && \Yii::$app->request->isAjax) {
             return false;
         }
 
-        \Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function() {
+        \Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
             return $this->handlePageBegin();
         });
 
@@ -201,21 +189,142 @@ class MetaHandler extends \yii\base\Component
      */
     public function register(MetaTaggerInterface $model, \Closure $callback)
     {
-        $this->title = $model->__mtTitle();
-        $this->type = $model->__mtType();
-        $this->image = $model->__mtImage();
-        $this->url = $model->__mtUrl();
+        $this->setTitle($model->__mtTitle());
+        $this->setType($model->__mtType());
+        $this->setImage($model->__mtImage());
+        $this->setUrl($model->__mtUrl());
 
-        $this->audio = $model->__mtAudio();
-        $this->description = $model->__mtDescription();
-        $this->determiner = $model->__mtDeterminer();
+        $this->setAudio($model->__mtAudio());
+        $this->setDescription($model->__mtDescription());
+        $this->setDeterminer($model->__mtDeterminer());
 
-        $this->details = $model->__mtDetails();
-        $this->locale = $model->__mtLocale();
-        $this->locale_alternate = $model->__mtLocale();
-        $this->video = $model->__mtVideo();
+        $this->setDetails($model->__mtDetails());
+        $this->setLocale($model->__mtLocale());
+        $this->setLocaleAlternate($model->__mtLocale());
+        $this->setVideo($model->__mtVideo());
 
         call_user_func($callback, $this, $model);
+    }
+
+    /**
+     * Sets title
+     * @param $value
+     */
+    public function setTitle($value)
+    {
+        if (null !== $value) {
+            $this->title = $value;
+        }
+    }
+
+    /**
+     * Sets type
+     * @param $value
+     */
+    public function setType($value)
+    {
+        if (null !== $value) {
+            $this->type = $value;
+        }
+    }
+
+    /**
+     * Sets image
+     * @param $value
+     */
+    public function setImage($value)
+    {
+        if (null !== $value) {
+            $this->image = $value;
+        }
+    }
+
+    /**
+     * Sets url
+     * @param $value
+     */
+    public function setUrl($value)
+    {
+        if (null !== $value) {
+            $this->url = $value;
+        }
+    }
+
+    /**
+     * Sets description
+     * @param $value
+     */
+    public function setDescription($value)
+    {
+        if (null !== $value) {
+            $this->description = $value;
+        }
+    }
+
+    /**
+     * Sets audio
+     * @param $value
+     */
+    public function setAudio($value)
+    {
+        if (null !== $value) {
+            $this->audio = $value;
+        }
+    }
+
+    /**
+     * Sets determiner
+     * @param $value
+     */
+    public function setDeterminer($value)
+    {
+        if (null !== $value) {
+            $this->determiner = $value;
+        }
+    }
+
+    /**
+     * Sets details
+     * @param $value
+     */
+    public function setDetails($value)
+    {
+        if (null !== $value) {
+            $this->details = $value;
+        }
+    }
+
+    /**
+     * Sets locale
+     * @param $value
+     */
+    public function setLocale($value)
+    {
+        if (null !== $value) {
+            $this->locale = $value;
+        }
+    }
+
+    /**
+     * Sets locale alternate
+     * @param $value
+     */
+    public function setLocaleAlternate($value)
+    {
+        if (null !== $value) {
+            $this->locale_alternate = $value;
+        }
+    }
+
+    /**
+     * Sets video
+     * @param $value
+     */
+    public function setVideo($value)
+    {
+        if (null !== $value) {
+            $this->video = $value;
+        }
     }
 
     /**
@@ -223,17 +332,17 @@ class MetaHandler extends \yii\base\Component
      */
     protected function handlePageBegin()
     {
-        if(!$this->title) {
+        if (!$this->title) {
             $this->title = $this->site_name;
         }
-        
+
         if ($this->suffix) {
-            
+
             $this->title = sprintf('%s | %s', $this->title, $this->suffix);
         }
 
         $this->_registerMetas();
-        
+
         if ($this->handleOg) {
             $this->_registerOpenGraphs();
         }
@@ -306,7 +415,7 @@ class MetaHandler extends \yii\base\Component
             \Yii::$app->view->registerMetaTag([
                 'property' => $property,
                 'content' => $value
-                ], $property);
+            ], $property);
         }
     }
 
